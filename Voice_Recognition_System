@@ -1,0 +1,46 @@
+#### VOICE_RECOGNITION_SYSTEM
+
+
+#include <SoftwareSerial.h>
+
+// Define pins for software serial communication
+#define RX_PIN 16
+#define TX_PIN 17
+SoftwareSerial mySerial(RX_PIN, TX_PIN);
+
+// Define LED pin
+#define LED_PIN 5
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(115200);        // Debugging serial
+  mySerial.begin(9600);        // Speech module baud rate
+  
+  // Set LED pin as output
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);  // Turn off LED initially
+  
+  Serial.println("Speech Recognition System Initialized");
+}
+
+void loop() {
+  // Check if data is available from the V3 module
+  if (mySerial.available()) {
+    String command = mySerial.readStringUntil('\n'); // Read the command
+    command.trim(); // Remove any extra spaces/newlines
+    
+    Serial.print("Received Command: ");
+    Serial.println(command);
+    
+    // Match recognized commands and control the LED
+    if (command == "TURN ON") {
+      digitalWrite(LED_PIN, HIGH);
+      Serial.println("LED Turned ON");
+    } else if (command == "TURN OFF") {
+      digitalWrite(LED_PIN, LOW);
+      Serial.println("LED Turned OFF");
+    } else {
+      Serial.println("Unrecognized Command");
+    }
+  }
+}
